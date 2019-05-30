@@ -1,0 +1,3 @@
+[submodule "bluzelle/bzpy/bzapi"]
+	path = bluzelle/bzpy/bzapi
+	url = https://github.com/bluzelle/bzapi/
