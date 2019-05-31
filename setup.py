@@ -97,7 +97,7 @@ setuptools.setup(
     name="bluzelle",
     # Updated via travisd: https://travis-ci.org/guettli/reprec
     # See .travis.yml
-    version="0.10.1",
+    version="0.10.7",
     author="Yarco Hayduk",
     author_email="yaroslav@bluzelle.com",
     description="A Python Bluzelle client",

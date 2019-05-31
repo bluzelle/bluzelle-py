@@ -1,5 +1,4 @@
-%module(directors="1") bzapi
-
+%module(moduleimport="import _bzapi", directors="1", threads=1) bzapi
 %include <std_shared_ptr.i>
 %{
 #include "include/response.hpp"

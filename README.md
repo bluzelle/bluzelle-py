@@ -25,7 +25,7 @@ Since we make use of Git submodules, to clone the repository, please run:
 
 - Install the following dependencies
 
-`sudo apt-get install curl cmake protobuf-compiler libboost-all-dev libprotoc-dev swig libcurl4-openssl-dev pkg-config meson ninja-build`
+`sudo apt-get install apt-get install libpcre3 libpcre3-dev bison curl cmake protobuf-compiler libboost-all-dev libprotoc-dev libcurl4-openssl-dev pkg-config meson ninja-build`
 
 - jsoncpp v1.8.4 compiled / built from source
 
@@ -38,6 +38,17 @@ meson --buildtype ${BUILD_TYPE} --default-library ${LIB_TYPE} . build-${LIB_TYPE
 ninja -v -C build-${LIB_TYPE}
 cd build-${LIB_TYPE}
 sudo ninja install
+```
+
+- Swig 4.0 compiled / built from sources
+
+```
+git clone --branch rel-4.0.0 https://github.com/swig/swig
+cd swig
+./autogen.sh
+./configure
+make
+sudo make install
 ```
 
 Installing `jsoncpp` via `apt-get` using the `libjsoncpp-dev` and `libjsoncpp1` dependencies will be supported in the future.
