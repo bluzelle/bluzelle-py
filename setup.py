@@ -82,7 +82,7 @@ class build_ext(build_ext_orig):
 
 setuptools.setup(
     name="bluzelle",
-    version="0.44.0",
+    version="0.45.0",
     author="Yarco Hayduk",
     author_email="yaroslav@bluzelle.com",
     description="A Python Bluzelle client",
