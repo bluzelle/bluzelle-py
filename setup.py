@@ -1,36 +1,18 @@
 import os
 import setuptools
-from setuptools.extension import Extension
-import subprocess
-from pprint import pprint
-import sys
 import shutil
+import pathlib
 
+from setuptools import Extension
+from setuptools.command.install import install
+from distutils.command.build import build
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-
 this_dir = os.path.dirname(os.path.abspath(__file__))
 
-from distutils.command.install_data import install_data
-from setuptools import find_packages, setup, Extension
-from setuptools.command.build_ext import build_ext
-from setuptools.command.install_lib import install_lib
-from setuptools.command.install_scripts import install_scripts
-from setuptools.command.develop import develop
-from setuptools.command.install import install
-import site
-from distutils.command.build import build
-
-
 from setuptools.command.build_ext import build_ext as build_ext_orig
-
-import struct
-import shutil
-import pathlib
-import platform
-
 
 class CustomBuild(build):
     def run(self):
@@ -85,7 +67,6 @@ class build_ext(build_ext_orig):
 
         os.chdir(str(build_temp))
 
-
         self.spawn(['cmake', str(bzpy_path)] + cmake_args)
 
         if not self.dry_run:
@@ -95,8 +76,6 @@ class build_ext(build_ext_orig):
         shutil.copyfile('bzapi.py', str(cwd) + "/bluzelle/bzapi.py")
 
         os.chdir(str(cwd))
-
-
 
 
 setuptools.setup(
