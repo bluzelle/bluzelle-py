@@ -13,8 +13,7 @@ from bluzelle.log.default import DefaultLogging
 
 class Bluzelle:
 
-    def __init__(self, priv_key, address="127.0.0.1", port=50000, logger = None):
-    #def __init__(self, priv_key, address="127.0.0.1", port=50000, logger = DefaultLogging()):
+    def __init__(self, priv_key, address="127.0.0.1", port=50000, logger = DefaultLogging()):
         bzapi.set_logger(logger)
         self.localhost_ip = "127.0.0.1"
         self.async_udp_port = get_next_free()
