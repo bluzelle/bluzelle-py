@@ -21,6 +21,7 @@ from setuptools.command.install_scripts import install_scripts
 from setuptools.command.develop import develop
 from setuptools.command.install import install
 import site
+from distutils.command.build import build
 
 
 from setuptools.command.build_ext import build_ext as build_ext_orig
@@ -29,6 +30,19 @@ import struct
 import shutil
 import pathlib
 import platform
+
+
+class CustomBuild(build):
+    def run(self):
+        self.run_command('build_ext')
+        build.run(self)
+
+
+class CustomInstall(install):
+    def run(self):
+        self.run_command('build_ext')
+        install.run(self)
+
 
 # taken from https://stackoverflow.com/questions/42585210/extending-setuptools-extension-to-use-cmake-in-setup-py
 class CMakeExtension(Extension):
@@ -49,8 +63,7 @@ class build_ext(build_ext_orig):
         cwd = pathlib.Path().absolute()
         bzpy_path = str(cwd) + "/bluzelle/bzpy"
 
-        # these dirs will be created in build_py, so if you don't have
-        # any python sources to bundle, the dirs will be missing
+        # these dirs will be created in build_py
         build_temp = pathlib.Path(self.build_temp)
         build_temp.mkdir(parents=True, exist_ok=True)
         extdir = pathlib.Path(self.get_ext_fullpath(ext.name))
@@ -77,22 +90,18 @@ class build_ext(build_ext_orig):
 
         if not self.dry_run:
             self.spawn(['cmake', '--build', '.'] + build_args)
-        shutil.copyfile('bzapi.py', str(cwd) + '/bzapi.py')
+
+        # copy the generated python wrapper to the root of bluzelle
+        shutil.copyfile('bzapi.py', str(cwd) + "/bluzelle/bzapi.py")
 
         os.chdir(str(cwd))
 
 
-class PostInstallCommand(install):
-    """Post-installation for installation mode."""
-    def run(self):
-        # PUT YOUR POST-INSTALL SCRIPT HERE or CALL A FUNCTION
-        install.run(self)
+
 
 setuptools.setup(
     name="bluzelle",
-    # Updated via travisd: https://travis-ci.org/guettli/reprec
-    # See .travis.yml
-    version="0.11.1",
+    version="0.12.99",
     author="Yarco Hayduk",
     author_email="yaroslav@bluzelle.com",
     description="A Python Bluzelle client",
@@ -100,22 +109,21 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/yarco/bluzelle",
     packages=setuptools.find_packages(),
-    #package_data={'bluzelle': ['bluzelle/bzapi', 'bluzelle/_bzapi.so', 'bluzelle/libbzapi.dylib','bluzelle/libjsoncpp.so.19', 'bluzelle/libbzapi.so', 'tests/tests.py']},
-    #   package_dir = {'bluzelle/bzapi'},
     include_package_data=True,
     install_requires=[
           'ecdsa',
     ],
+    # *** this part is for building wheels in the future ***
     # This distribution contains platform-specific C++ libraries, but they are not
     # built with distutils. So we must create a dummy Extension object so when we
     # create a binary file it knows to make it platform-specific.
-    #ext_modules=[Extension('Bluzelle.dummy', sources = ['dummy.c'])],
+    # ext_modules=[Extension('Bluzelle.dummy', sources = ['dummy.c'])],
+    # package_data={'bluzelle': ['bluzelle/bzapi', 'bluzelle/_bzapi.so', 'bluzelle/libbzapi.dylib','bluzelle/libjsoncpp.so.19', 'bluzelle/libbzapi.so', 'tests/tests.py']},
+    # package_dir = {'bluzelle/bzapi'},
+    # *** ---------------------------------------------- ***
     ext_modules=[CMakeExtension('bzpy')],
-    cmdclass={
-        'install': PostInstallCommand,
-        'build_ext': build_ext,
-    },
-
+    py_modules = ['bzpy'],
+    cmdclass={'build_ext': build_ext, 'build': CustomBuild, 'install': CustomInstall},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

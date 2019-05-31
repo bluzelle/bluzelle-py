@@ -19,13 +19,9 @@ Since we make use of Git submodules, to clone the repository, please run:
 
 ## Linux (Ubuntu) prerequisites ##
 
-- Python 3 with pip support 
+- Python 3 with pip support and other dependencies
 
-`sudo apt-get install python3-pip`
-
-- Install the following dependencies
-
-`sudo apt-get install apt-get install libpcre3 libpcre3-dev bison curl cmake protobuf-compiler libboost-all-dev libprotoc-dev libcurl4-openssl-dev pkg-config meson ninja-build`
+`sudo apt-get install python3-pip libpcre3 libpcre3-dev bison curl cmake protobuf-compiler libboost-all-dev libprotoc-dev libcurl4-openssl-dev pkg-config meson ninja-build`
 
 - jsoncpp v1.8.4 compiled / built from source
 
@@ -80,7 +76,7 @@ print(res0['error']) # 'RECORD_NOT_FOUND'
 res1 = db.create("a", "b")
 print(res1) # True
 res2 = db.read("a")
-print(res2['value']) # "b"
+print(res2) # "b"
 
 ```
 
@@ -107,7 +103,7 @@ async def interact():
       res1 = await db.create("a", "b")
       print(res1)  # True
       res2 = await db.read("a")
-      print(res2['value'])  # "b"
+      print(res2)  # "b"
 
 
 try:

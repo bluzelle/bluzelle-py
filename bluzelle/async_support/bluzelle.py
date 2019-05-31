@@ -9,11 +9,11 @@ from bluzelle import bzapi
 from bluzelle.lib.udp.udp_support import *
 from bluzelle.lib.udp.test_udp import *
 from bluzelle.async_support.db import DB
-from bluzelle.log.default import DefaultLogging
+from bluzelle.log.default import DefaultConsoleLogger
 
 class Bluzelle:
 
-    def __init__(self, priv_key, address="127.0.0.1", port=50000, logger = DefaultLogging()):
+    def __init__(self, priv_key, address="127.0.0.1", port=50000, logger = DefaultConsoleLogger()):
         bzapi.set_logger(logger)
         self.localhost_ip = "127.0.0.1"
         self.async_udp_port = get_next_free()
