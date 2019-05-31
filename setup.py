@@ -14,6 +14,8 @@ this_dir = os.path.dirname(os.path.abspath(__file__))
 
 from setuptools.command.build_ext import build_ext as build_ext_orig
 
+# from https://stackoverflow.com/questions/12491328/python-distutils-not-include-the-swig-generated-module
+# Need to redefine these so that we can include the swig-generated files inside of the `bluzelle` folder
 class CustomBuild(build):
     def run(self):
         self.run_command('build_ext')
@@ -80,7 +82,7 @@ class build_ext(build_ext_orig):
 
 setuptools.setup(
     name="bluzelle",
-    version="0.12.99",
+    version="0.44.0",
     author="Yarco Hayduk",
     author_email="yaroslav@bluzelle.com",
     description="A Python Bluzelle client",
@@ -100,6 +102,7 @@ setuptools.setup(
     # package_data={'bluzelle': ['bluzelle/bzapi', 'bluzelle/_bzapi.so', 'bluzelle/libbzapi.dylib','bluzelle/libjsoncpp.so.19', 'bluzelle/libbzapi.so', 'tests/tests.py']},
     # package_dir = {'bluzelle/bzapi'},
     # *** ---------------------------------------------- ***
+
     ext_modules=[CMakeExtension('bzpy')],
     py_modules = ['bzpy'],
     cmdclass={'build_ext': build_ext, 'build': CustomBuild, 'install': CustomInstall},

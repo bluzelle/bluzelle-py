@@ -1,0 +1,23 @@
+language: python
+matrix:
+  include:
+  - python: 3.7
+    dist: xenial
+    sudo: true
+before_script:
+- git config --global user.email "travis@travis-ci.org"
+- git config --global user.name "Travis CI"
+- git remote add origin-rw https://${GITHUB_TOKEN}@github.com/bluzelle/bluzelle-py.git
+- git pull
+- bumpversion --verbose minor
+- git push --set-upstream origin-rw HEAD:devel
+script:
+- python3 -c "print('future integration test here')"
+deploy:
+  provider: pypi
+  user: "${PYPI_USER}"
+  server: https://test.pypi.org/legacy/
+  password:
+    secure: mL+DLhIA7PFAooE1OiMAgE8K0m4IAUKUFv2yXJQHMC/woVCWwvRb19hw9km2kKADGCs8Xj6VV31CnrLkVtZ2fVovz96fnKXu2VZaWmrNcWDCejREYUBv+4f4bqbYTW2btvKMWBnB3ZvdUXyfpN96eTjARDWVkIEVXxEQGmNxmBernJUa00Lb8U9xV5K4GmDcyziFe4bk5GrYYW5UsCZOg0chrnEZC3clJYH6W6C2HDAEAq8q/vMq9iIQKR087HK3U6Dw1CSxa9Xjl9HGQeNopjzummnaWqVPA3mmH0+tiHaYz0+vvKin383lqSc4EihCq4gg/wReB305hUyh7Nq0IYXA77Dfb7l9L6N9bbjTQJE9CtT6yah4Fjkdn5Yz3vTi9VY1uZXvgiYvtR7+NbEklbMH3ehYimcOGGjCuxMrb1rVQ8uBX0tJanZjR+x091JrzUFRT0WP0WryG7vJhyl5oWesKVD3DhWcyxMkq+Q6UpD2X5VZ9IHRUyeju+J/kHchSY9az6C+cG7hyxTPPIqBiA4kAcFFtigB1Ni/OIEa2MaibNitJkbc3mgQxc4Csy7HrkSDPOIEOr+ndjj2mlup9OBpL9C2+tTjk0NM0DshQP5+VYvQPrHefLWKl17yqhHTjVXeEhZ9Dsi88VrhDJ4Qx0kdiBFlPMYJgU0sbac9oS8=
+  on:
+    branch: devel
