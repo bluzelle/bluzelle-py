@@ -4,6 +4,8 @@ from setuptools.extension import Extension
 import subprocess
 from pprint import pprint
 import sys
+import shutil
+
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -69,23 +71,16 @@ class build_ext(build_ext_orig):
         ]
 
         os.chdir(str(build_temp))
-        folders = []
-
-        # r=root, d=directories, f = files
-        for r, d, f in os.walk(str(cwd)):
-            for folder in d:
-                folders.append(os.path.join(r, folder))
-
-        for f in folders:
-            print(f)
 
 
         self.spawn(['cmake', str(bzpy_path)] + cmake_args)
 
         if not self.dry_run:
             self.spawn(['cmake', '--build', '.'] + build_args)
+        shutil.copyfile('bzapi.py', str(cwd) + '/bzapi.py')
 
         os.chdir(str(cwd))
+
 
 class PostInstallCommand(install):
     """Post-installation for installation mode."""
@@ -97,7 +92,7 @@ setuptools.setup(
     name="bluzelle",
     # Updated via travisd: https://travis-ci.org/guettli/reprec
     # See .travis.yml
-    version="0.10.7",
+    version="0.11.1",
     author="Yarco Hayduk",
     author_email="yaroslav@bluzelle.com",
     description="A Python Bluzelle client",
