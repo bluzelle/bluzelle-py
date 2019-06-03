@@ -56,6 +56,9 @@ During the pip install process, a C++ library would be built.
 
 ## Example code (blocking) ##
 
+The following tests assume that we have a local swarm running on `127.0.0.1:50000`.
+You can alternatively test on our public testnet `testnet.bluzelle.com:51010`.
+
 ```
 import uuid
 from bluzelle import bluzelle
