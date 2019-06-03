@@ -71,15 +71,16 @@ priv_key = "-----BEGIN EC PRIVATE KEY-----\n" \
 blz = bluzelle.Bluzelle(priv_key, "127.0.0.1", 50000)
 
 db = blz.create_db(my_uuid)
+key = 'a'
+try:
+      res0 = db.read(key)
+except Exception:
+    print(f"{key} does not exist")
 res1 = db.create("a", "b")
 print(res1) # True
 res2 = db.read("a")
 print(res2) # "b"
-key = 'c'
-try:
-      res0 = db.read("c")
-except Exception:
-    print(f"{key} does not exist")
+
 
 ```
 
@@ -101,15 +102,16 @@ blz = bluzelle.Bluzelle(priv_key, "127.0.0.1", 50000)
 
 async def interact():
       db = await blz.create_db(my_uuid)
+      key = 'a'
+      try:
+          res0 = await db.read(key)
+      except Exception:
+          print(f"{key} does not exist")
       res1 = await db.create("a", "b")
       print(res1)  # True
       res2 = await db.read("a")
       print(res2)  # "b"
-      key = 'c'
-      try:
-          res0 = await db.read("c")
-      except Exception:
-          print(f"{key} does not exist")
+
 
 
 try:
