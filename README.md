@@ -21,36 +21,10 @@ Since we make use of Git submodules, to clone the repository, please run:
 
 - Python 3 with pip support and other dependencies
 
-`sudo apt-get install python3-pip libpcre3 libpcre3-dev bison curl cmake protobuf-compiler libboost-all-dev libprotoc-dev libcurl4-openssl-dev pkg-config meson ninja-build`
-
-- jsoncpp v1.8.4 compiled / built from source
-
-```
-curl https://codeload.github.com/open-source-parsers/jsoncpp/tar.gz/1.8.4 | tar xvz
-cd jsoncp*
-BUILD_TYPE=release
-LIB_TYPE=shared
-meson --buildtype ${BUILD_TYPE} --default-library ${LIB_TYPE} . build-${LIB_TYPE}
-ninja -v -C build-${LIB_TYPE}
-cd build-${LIB_TYPE}
-sudo ninja install
-```
-
-- Swig 4.0 compiled / built from sources
-
-```
-git clone --branch rel-4.0.0 https://github.com/swig/swig
-cd swig
-./autogen.sh
-./configure
-make
-sudo make install
-```
-
-Installing `jsoncpp` via `apt-get` using the `libjsoncpp-dev` and `libjsoncpp1` dependencies will be supported in the future.
+`sudo apt-get install python3-pip libpcre3 libpcre3-dev bison curl cmake protobuf-compiler libboost-all-dev libprotoc-dev libcurl4-openssl-dev pkg-config swig libjsoncpp-dev libjsoncpp1`
 
 ## Install steps ##
-During the pip install process, a C++ library would be built. 
+During the pip install process, the [bzapi](https://github.com/bluzelle/bzapi/tree/devel/library) library would be built with cmake. 
 
 `python3 -m pip install --index-url https://test.pypi.org/simple/ bluzelle --upgrade --force-reinstall --no-cache-dir`
 
@@ -73,13 +47,13 @@ priv_key = "-----BEGIN EC PRIVATE KEY-----\n" \
 
 blz = bluzelle.Bluzelle(priv_key, "127.0.0.1", 50000)
 
-db = blz.create_db(my_uuid)
+db = blz.create_db(my_uuid, 0, False)
 key = 'a'
 try:
       res0 = db.read(key)
 except Exception:
     print(f"{key} does not exist")
-res1 = db.create("a", "b")
+res1 = db.create("a", "b", 0)
 print(res1) # True
 res2 = db.read("a")
 print(res2) # "b"
@@ -104,13 +78,13 @@ priv_key = "-----BEGIN EC PRIVATE KEY-----\n" \
 blz = bluzelle.Bluzelle(priv_key, "127.0.0.1", 50000)
 
 async def interact():
-      db = await blz.create_db(my_uuid)
+      db = await blz.create_db(my_uuid, 0, False)
       key = 'a'
       try:
           res0 = await db.read(key)
       except Exception:
           print(f"{key} does not exist")
-      res1 = await db.create("a", "b")
+      res1 = await db.create("a", "b", 0)
       print(res1)  # True
       res2 = await db.read("a")
       print(res2)  # "b"

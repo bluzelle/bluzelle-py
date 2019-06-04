@@ -1,5 +1,4 @@
 from bluzelle import bzapi
-import logging
 
 class DefaultConsoleLogger(bzapi.logger):
 

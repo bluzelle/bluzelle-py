@@ -13,5 +13,4 @@ bluzelle/_bzapi.so
 bluzelle/bzapi.py
 Library
 publish
-ignore.txt
 *.pyc

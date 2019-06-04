@@ -1,4 +1,3 @@
 recursive-include bzpy *.*
 global-include *.*
-include bluzelle/_bzapi.so
 include test/test.py

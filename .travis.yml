@@ -1,3 +1,4 @@
+# some parts taken from https://gist.github.com/willprice/e07efd73fb7f13f917ea
 language: python
 matrix:
   include:
