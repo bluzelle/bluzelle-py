@@ -9,7 +9,6 @@ import asyncio
 from socket import *
 import bluzelle
 import uuid
-from bluzelle import bzapi
 
 class TestLibrary(unittest.TestCase):
 
