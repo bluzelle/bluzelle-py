@@ -2,16 +2,17 @@ from pprint import pprint
 import asyncio
 import sys
 import json
+import logging
 
 from ecdsa import SigningKey
 from bluzelle import bzapi
 from bluzelle.lib.udp.udp_support import *
 from bluzelle.db import DB
-from bluzelle.log.default import DefaultConsoleLogger
+from bluzelle.log.default import DefaultLogger
 
 class Bluzelle:
 
-    def __init__(self, priv_key, address="127.0.0.1", port=50000, logger = DefaultConsoleLogger()):
+    def __init__(self, priv_key, address="127.0.0.1", port=50000, logger = DefaultLogger()):
         bzapi.set_logger(logger)
         self.localhost_ip = "127.0.0.1"
         self.ws_address = address
