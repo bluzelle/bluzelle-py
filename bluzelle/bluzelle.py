@@ -12,7 +12,7 @@ from bluzelle.log.default import DefaultLogger
 
 class Bluzelle:
 
-    def __init__(self, priv_key, address="127.0.0.1", port=50000, logger = DefaultLogger()):
+    def __init__(self, priv_key, swarm_id="", address="127.0.0.1", port=50000, logger = DefaultLogger()):
         bzapi.set_logger(logger)
         self.localhost_ip = "127.0.0.1"
         self.ws_address = address
@@ -29,7 +29,7 @@ class Bluzelle:
         full_url = f"ws://{address}:{port}"
 
         self.init_happened = False
-        if (not bzapi.initialize(self.pub_key, self.priv_key, full_url, "")):
+        if (not bzapi.initialize(self.pub_key, self.priv_key, full_url, swarm_id)):
             raise Exception('Could not run initialize the Bluzelle object')
         else:
             self.init_happened = True

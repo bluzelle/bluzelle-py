@@ -15,13 +15,17 @@ Since we make use of Git submodules, to clone the repository, please run:
 
 - The following dependencies 
 
-`brew install python jsoncpp boost protobuf openssl curl cmake pkg-config swig`
+`brew install python jsoncpp protobuf openssl curl cmake pkg-config swig https://raw.githubusercontent.com/Homebrew/homebrew-core/44767c8ffdaf47b95b6d0af5b6917c454467dc56/Formula/boost.rb`
 
-## Linux (Ubuntu) prerequisites ##
+Note, that we are using the yet unreleased Boost 1.7 Homebrew dependency.  
+
+## Linux (Ubuntu) prerequisites ## 
 
 - Python 3 with pip support and other dependencies
 
-`sudo apt-get install python3-pip libpcre3 libpcre3-dev bison curl cmake protobuf-compiler libboost-all-dev libprotoc-dev libcurl4-openssl-dev pkg-config swig libjsoncpp-dev libjsoncpp1`
+`sudo apt-get install python3-pip libpcre3 libpcre3-dev curl cmake protobuf-compiler libprotoc-dev libcurl4-openssl-dev pkg-config swig libjsoncpp-dev libjsoncpp1`
+
+- Latest Boost 1.70. Support for using `libboost-all-dev` will be provided soon.
 
 ## Install steps ##
 During the pip install process, the [bzapi](https://github.com/bluzelle/bzapi/tree/devel/library) library would be built with cmake. 
