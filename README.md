@@ -49,7 +49,7 @@ priv_key = "-----BEGIN EC PRIVATE KEY-----\n" \
       "UPpytiopiS5D+t2cYzXJn19MQmnl/g==\n" \
       "-----END EC PRIVATE KEY-----"
 
-blz = bluzelle.Bluzelle(priv_key, "127.0.0.1", 50000)
+blz = bluzelle.Bluzelle(priv_key, swarm_id = "", address = "127.0.0.1", port = 50000)
 
 db = blz.create_db(my_uuid, 0, False)
 key = 'a'
@@ -79,7 +79,7 @@ priv_key = "-----BEGIN EC PRIVATE KEY-----\n" \
       "UPpytiopiS5D+t2cYzXJn19MQmnl/g==\n" \
       "-----END EC PRIVATE KEY-----"
 
-blz = bluzelle.Bluzelle(priv_key, "127.0.0.1", 50000)
+blz = bluzelle.Bluzelle(priv_key, swarm_id = "", address = "127.0.0.1", port = 50000)
 
 async def interact():
       db = await blz.create_db(my_uuid, 0, False)
