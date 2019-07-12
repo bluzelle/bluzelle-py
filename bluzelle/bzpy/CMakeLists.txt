@@ -14,31 +14,46 @@ include(ExternalProject)
 ExternalProject_Add(bzapi_external
           SOURCE_DIR ${BZAPI_PATH}
           BINARY_DIR bzapi_bin
-          INSTALL_DIR bzapi_install
-          CMAKE_ARGS "-DOMIT_LIBRARY=TRUE"
+          CMAKE_ARGS -DSTATIC_LIBRARY=ON
           INSTALL_COMMAND ""
           DOWNLOAD_COMMAND "")
 
+# use bzapi's precompiled libraries...
 
-add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY -DBOOST_LOG_DYN_LINK)
-find_package(Boost     REQUIRED filesystem system log thread)
-include_directories(${Boost_INCLUDE_DIRS})
+# boost
+set(boost_dir ${CMAKE_BINARY_DIR}/bzapi_bin/boost/src/boost/)
+set(Boost_INCLUDE_DIRS ${boost_dir})
 
-include(FindPkgConfig)
+set(Boost_LIBRARIES
+    ${boost_dir}/lib/libboost_log.a
+    ${boost_dir}/lib/libboost_program_options.a
+    ${boost_dir}/lib/libboost_system.a
+    ${boost_dir}/lib/libboost_thread.a
+    pthread
+    ${boost_dir}/lib/libboost_serialization.a
+    ${boost_dir}/lib/libboost_date_time.a
+    ${boost_dir}/lib/libboost_log_setup.a
+    ${boost_dir}/lib/libboost_filesystem.a
+    ${boost_dir}/lib/libboost_regex.a
+    ${boost_dir}/lib/libboost_chrono.a
+    ${boost_dir}/lib/libboost_atomic.a
+    )
 
-pkg_search_module(JSONCPP REQUIRED jsoncpp)
+# json
+set(JSONCPP_LIBRARIES ${CMAKE_BINARY_DIR}/bzapi_bin/jsoncpp/src/jsoncpp/lib/libjsoncpp.a)
 
-include_directories(${JSONCPP_INCLUDE_DIRS})
-link_directories(${JSONCPP_LIBRARY_DIRS})
+# openssl
+set(OPENSSL_LIBRARIES
+    ${CMAKE_BINARY_DIR}/bzapi_bin/openssl/src/openssl/lib/libssl.a
+    ${CMAKE_BINARY_DIR}/bzapi_bin/openssl/src/openssl/lib/libcrypto.a)
+
+set(OPENSSL_INCLUDE_DIR ${CMAKE_BINARY_DIR}/bzapi_bin/openssl/src/openssl/include)
 
 include(FindProtobuf)
 find_package(Protobuf REQUIRED)
 include_directories(${PROTOBUF_INCLUDE_DIR})
 
-# generated proto files
-include_directories(${CMAKE_BINARY_DIR}/bzapi_bin)
-
-
+include(FindPkgConfig)
 find_package(PythonLibs 3 REQUIRED)
 
 if(PYTHONLIBS_VERSION_STRING MATCHES "^2.*$" )
@@ -50,24 +65,33 @@ endif()
 find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
 
-
-include_directories(${CMAKE_BINARY_DIR}/bzapi_bin/openssl/src/openssl-build/include)
-include_directories(${CMAKE_BINARY_DIR}/bzapi_bin/openssl/src/openssl/include)
-include_directories(${CMAKE_SOURCE_DIR}/bzapi)
-include_directories(${CMAKE_SOURCE_DIR}/bzapi/include)
-
+# generated proto files
+include_directories(${OPENSSL_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/bzapi ${CMAKE_BINARY_DIR}/bzapi_bin)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
-set(CRYPTO_LIBRARIES ${CMAKE_BINARY_DIR}/bzapi_bin/crypto/libcrypto.a)
-set(PROTO_LIBRARIES ${CMAKE_BINARY_DIR}/bzapi_bin/proto/libproto.a)
-set(SWARM_LIBRARIES ${CMAKE_BINARY_DIR}/bzapi_bin/swarm/libswarm.a)
-set(NODE_LIBRARIES ${CMAKE_BINARY_DIR}/bzapi_bin/node/libnode.a)
-set(DATABASE_LIBRARIES ${CMAKE_BINARY_DIR}/bzapi_bin/database/libdatabase.a)
-set(OPENSSL_LIBRARIES ${CMAKE_BINARY_DIR}/bzapi_bin/openssl/src/openssl-build/libcrypto.a ${CMAKE_BINARY_DIR}/bzapi_bin/openssl/src/openssl-build/libssl.a dl pthread)
+set(BZAPI_LIBRARY    ${CMAKE_BINARY_DIR}/bzapi_bin/library/libbzapi.a)
+set(CRYPTO_LIBRARY   ${CMAKE_BINARY_DIR}/bzapi_bin/crypto/libcrypto.a)
+set(DATABASE_LIBRARY ${CMAKE_BINARY_DIR}/bzapi_bin/database/libdatabase.a)
+set(NODE_LIBRARY     ${CMAKE_BINARY_DIR}/bzapi_bin/node/libnode.a)
+set(PROTO_LIBRARY    ${CMAKE_BINARY_DIR}/bzapi_bin/proto/libproto.a)
+set(SWARM_LIBRARY    ${CMAKE_BINARY_DIR}/bzapi_bin/swarm/libswarm.a)
+set(UTILS_LIBRARY    ${CMAKE_BINARY_DIR}/bzapi_bin/utils/libutils.a)
 
 set_source_files_properties(bzapi.i PROPERTIES CPLUSPLUS ON)
-swig_add_library(bzapi TYPE SHARED LANGUAGE python SOURCES bzapi.i ${CMAKE_SOURCE_DIR}/bzapi/library/library.cpp ${CMAKE_SOURCE_DIR}/bzapi/include/bzapi.hpp ${CMAKE_SOURCE_DIR}/bzapi/include/response.hpp ${CMAKE_SOURCE_DIR}/bzapi/library/udp_response.hpp ${CMAKE_SOURCE_DIR}/bzapi/library/mutable_response.hpp ${CMAKE_SOURCE_DIR}/bzapi/include/logger.hpp ${CMAKE_SOURCE_DIR}/bzapi/library/log.cpp ${CMAKE_SOURCE_DIR}/bzapi/library/log.hpp)
+swig_add_library(bzapi TYPE SHARED LANGUAGE python SOURCES bzapi.i)
+swig_link_libraries(bzapi
+    ${BZAPI_LIBRARY}
+    ${CRYPTO_LIBRARY}
+    ${SWARM_LIBRARY}
+    ${NODE_LIBRARY}
+    ${DATABASE_LIBRARY}
+    ${UTILS_LIBRARY}
+    ${PROTO_LIBRARY}
+    ${PROTOBUF_LIBRARIES}
+    ${JSONCPP_LIBRARIES}
+    ${OPENSSL_LIBRARIES}
+    ${Boost_LIBRARIES}
+    ${PYTHON_LIBRARIES})
 
-swig_link_libraries(bzapi ${Boost_LOG_LIBRARIES} ${Boost_LIBRARIES} ${Boost_LOG_SETUP_LIBRARIES} ${PROTOBUF_LIBRARIES} ${JSONCPP_LIBRARIES} ${OPENSSL_LIBRARIES} ${CRYPTO_LIBRARIES} ${PROTO_LIBRARIES} ${SWARM_LIBRARIES} ${NODE_LIBRARIES} ${DATABASE_LIBRARIES} ${PYTHON_LIBRARIES})
 set_target_properties(_bzapi PROPERTIES SUFFIX ".so")
 add_dependencies(_bzapi bzapi_external)
