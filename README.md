@@ -1,12 +1,6 @@
 A Python 3.x client library for Bluzelle.
 ===================
 
-# Cloning and pulling changes # 
-
-Since we make use of Git submodules, to clone the repository, please run: 
-
-`git clone --recurse-submodules https://github.com/bluzelle/bluzelle-py`
-
 ## OSX prerequisites ##
 
 - Homebrew 
@@ -15,17 +9,14 @@ Since we make use of Git submodules, to clone the repository, please run:
 
 - The following dependencies 
 
-`brew install python jsoncpp protobuf openssl curl cmake pkg-config swig https://raw.githubusercontent.com/Homebrew/homebrew-core/44767c8ffdaf47b95b6d0af5b6917c454467dc56/Formula/boost.rb`
-
-Note, that we are using the yet unreleased Boost 1.7 Homebrew dependency.  
+`brew install python protobuf openssl cmake pkg-config swig`
 
 ## Linux (Ubuntu) prerequisites ## 
 
 - Python 3 with pip support and other dependencies
 
-`sudo apt-get install python3-pip libpcre3 libpcre3-dev curl cmake protobuf-compiler libprotoc-dev libcurl4-openssl-dev pkg-config swig libjsoncpp-dev libjsoncpp1`
+`sudo apt-get install python3-pip libpcre3 libpcre3-dev cmake protobuf-compiler libprotoc-dev pkg-config swig`
 
-- Latest Boost 1.70. Support for using `libboost-all-dev` will be provided soon.
 
 ## Install steps ##
 During the pip install process, the [bzapi](https://github.com/bluzelle/bzapi/tree/devel/library) library would be built with cmake. 
@@ -93,8 +84,6 @@ async def interact():
       res2 = await db.read("a")
       print(res2)  # "b"
 
-
-
 try:
     loop = asyncio.get_event_loop()
     loop.run_until_complete(interact())
@@ -103,3 +92,9 @@ finally:
 ```
 
 Please check out the integration tests for other code samples. 
+
+# Cloning and pulling changes # 
+
+Since we make use of Git submodules, to clone the repository, please run: 
+
+`git clone --recurse-submodules https://github.com/bluzelle/bluzelle-py`

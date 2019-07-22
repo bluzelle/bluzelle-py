@@ -3,6 +3,7 @@ import asyncio
 import sys
 import json
 import logging
+import base64
 
 from ecdsa import SigningKey
 from bluzelle import bzapi
@@ -12,16 +13,16 @@ from bluzelle.log.default import DefaultLogger
 
 class Bluzelle:
 
-    def __init__(self, priv_key, swarm_id="", address="127.0.0.1", port=50000, logger = DefaultLogger()):
+    def __init__(self, priv_key, swarm_id="0", address="127.0.0.1", port=50000, logger = DefaultLogger()):
         bzapi.set_logger(logger)
         self.localhost_ip = "127.0.0.1"
         self.ws_address = address
         self.ws_port = port
-        self.priv_key = priv_key
+        self.priv_key = priv_key.replace("-----BEGIN EC PRIVATE KEY-----\n","").replace("\n-----END EC PRIVATE KEY-----\n","")
+
         try:
-            pem_priv_key = SigningKey.from_pem(priv_key)
-            pem_pub_key = pem_priv_key.get_verifying_key().to_pem().decode("utf-8")
-            self.pub_key = pem_pub_key.replace("-----BEGIN PUBLIC KEY-----\n","").replace("\n-----END PUBLIC KEY-----\n","")
+            tmp_priv_key = SigningKey.from_der(base64.b64decode(self.priv_key))
+            self.pub_key = base64.b64encode(tmp_priv_key.get_verifying_key().to_der()).decode('utf-8')
         except Exception as e:
             logging.error(f'Error parsing private key {priv_key}. Error: {str(e)}')
             raise Exception(f'Error parsing private key {priv_key}')

@@ -14,7 +14,7 @@ include(ExternalProject)
 ExternalProject_Add(bzapi_external
           SOURCE_DIR ${BZAPI_PATH}
           BINARY_DIR bzapi_bin
-          CMAKE_ARGS -DSTATIC_LIBRARY=ON
+          CMAKE_ARGS -DSTATIC_LIBRARY=ON -DBUILD_TESTS=OFF
           INSTALL_COMMAND ""
           DOWNLOAD_COMMAND "")
 
