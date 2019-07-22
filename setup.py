@@ -108,7 +108,7 @@ setuptools.setup(
     cmdclass={'build_ext': build_ext, 'build': CustomBuild, 'install': CustomInstall},
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: Apache Software License (Apache 2.0)",
+        "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
     ],
 )
