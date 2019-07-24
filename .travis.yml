@@ -10,7 +10,7 @@ before_script:
 - git config --global user.email "travis@travis-ci.org"
 - git config --global user.name "Travis CI"
 - git remote add origin-rw https://${GITHUB_TOKEN}@github.com/bluzelle/bluzelle-py.git
-- bumpversion --verbose minor
+- bumpversion --verbose minor --allow-dirty
 - git push --set-upstream origin-rw HEAD:devel
 script:
 - python3 -c "print('future integration test here')"
