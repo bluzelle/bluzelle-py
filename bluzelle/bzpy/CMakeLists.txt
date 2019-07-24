@@ -14,40 +14,37 @@ include(ExternalProject)
 ExternalProject_Add(bzapi_external
           SOURCE_DIR ${BZAPI_PATH}
           BINARY_DIR bzapi_bin
-          CMAKE_ARGS -DSTATIC_LIBRARY=ON -DBUILD_TESTS=OFF
+          CMAKE_ARGS -DSTATIC_LIBRARY=ON -DBUILD_TESTS=OFF -DBUILD_DEPEND=ON
           INSTALL_COMMAND ""
           DOWNLOAD_COMMAND "")
 
 # use bzapi's precompiled libraries...
 
 # boost
-set(boost_dir ${CMAKE_BINARY_DIR}/bzapi_bin/boost/src/boost/)
-set(Boost_INCLUDE_DIRS ${boost_dir})
+set(boost_lib_dir ${CMAKE_BINARY_DIR}/bzapi_bin/boost/src/boost/stage/lib)
 
 set(Boost_LIBRARIES
-    ${boost_dir}/lib/libboost_log.a
-    ${boost_dir}/lib/libboost_program_options.a
-    ${boost_dir}/lib/libboost_system.a
-    ${boost_dir}/lib/libboost_thread.a
+    ${boost_lib_dir}/libboost_log.a
+    ${boost_lib_dir}/libboost_program_options.a
+    ${boost_lib_dir}/libboost_system.a
+    ${boost_lib_dir}/libboost_thread.a
     pthread
-    ${boost_dir}/lib/libboost_serialization.a
-    ${boost_dir}/lib/libboost_date_time.a
-    ${boost_dir}/lib/libboost_log_setup.a
-    ${boost_dir}/lib/libboost_filesystem.a
-    ${boost_dir}/lib/libboost_regex.a
-    ${boost_dir}/lib/libboost_chrono.a
-    ${boost_dir}/lib/libboost_atomic.a
+    ${boost_lib_dir}/libboost_serialization.a
+    ${boost_lib_dir}/libboost_date_time.a
+    ${boost_lib_dir}/libboost_log_setup.a
+    ${boost_lib_dir}/libboost_filesystem.a
+    ${boost_lib_dir}/libboost_regex.a
+    ${boost_lib_dir}/libboost_chrono.a
+    ${boost_lib_dir}/libboost_atomic.a
     )
 
 # json
-set(JSONCPP_LIBRARIES ${CMAKE_BINARY_DIR}/bzapi_bin/jsoncpp/src/jsoncpp/lib/libjsoncpp.a)
+set(JSONCPP_LIBRARIES ${CMAKE_BINARY_DIR}/bzapi_bin/jsoncpp/src/jsoncpp-build/src/lib_json/libjsoncpp.a)
 
 # openssl
 set(OPENSSL_LIBRARIES
-    ${CMAKE_BINARY_DIR}/bzapi_bin/openssl/src/openssl/lib/libssl.a
-    ${CMAKE_BINARY_DIR}/bzapi_bin/openssl/src/openssl/lib/libcrypto.a)
-
-set(OPENSSL_INCLUDE_DIR ${CMAKE_BINARY_DIR}/bzapi_bin/openssl/src/openssl/include)
+    ${CMAKE_BINARY_DIR}/bzapi_bin/openssl/src/openssl-build/libssl.a
+    ${CMAKE_BINARY_DIR}/bzapi_bin/openssl/src/openssl-build/libcrypto.a)
 
 include(FindProtobuf)
 find_package(Protobuf REQUIRED)
@@ -66,7 +63,7 @@ find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
 
 # generated proto files
-include_directories(${OPENSSL_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/bzapi ${CMAKE_BINARY_DIR}/bzapi_bin)
+include_directories(${CMAKE_SOURCE_DIR}/bzapi ${CMAKE_BINARY_DIR}/bzapi_bin)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 set(BZAPI_LIBRARY    ${CMAKE_BINARY_DIR}/bzapi_bin/library/libbzapi.a)
