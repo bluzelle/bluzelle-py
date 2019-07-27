@@ -88,7 +88,7 @@ setuptools.setup(
     description="A Python Bluzelle client",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yarco/bluzelle",
+    url="https://github.com/bluzelle/bluzelle-py",
     packages=setuptools.find_packages(),
     include_package_data=True,
     install_requires=[
