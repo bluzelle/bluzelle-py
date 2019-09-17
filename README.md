@@ -1,88 +1,111 @@
-A Python 3.x client library for Bluzelle.
-===================
+<a href="https://bluzelle.com/"><img src='https://raw.githubusercontent.com/bluzelle/api/master/source/images/Bluzelle%20-%20Logo%20-%20Big%20-%20Colour.png' alt="Bluzelle" style="width: 100%"/></a>
 
-## OSX prerequisites ##
+# bluzelle-py: Official Bluzelle Cache Client for Python 3.x
 
-- Homebrew 
+## Installation
 
-`ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)")` 
+After addressing dependencies below, installation is as usual for Python
+packages.
 
-- The following dependencies 
-
-`brew install python protobuf openssl cmake pkg-config swig`
-
-## Linux (Ubuntu) prerequisites ## 
-
-- Python 3 with pip support and other dependencies
-
-`sudo apt-get install python3-pip libpcre3 libpcre3-dev cmake protobuf-compiler libprotoc-dev pkg-config swig`
-
-
-## Install steps ##
-During the pip install process, the [bzapi](https://github.com/bluzelle/bzapi/tree/devel/library) library would be built with cmake. 
-
-`python3 -m pip install --index-url https://test.pypi.org/simple/ bluzelle --upgrade --force-reinstall --no-cache-dir`
-
-## Example code (blocking) ##
-
-The following tests assume that we have a local swarm running on `127.0.0.1:50000`.
-You can alternatively test on our public testnet `testnet.bluzelle.com:51010`.
-
+```sh
+pip install bluzelle
 ```
+
+### Compilation Dependencies
+
+During the pip install process, the [bzapi](https://github.com/bluzelle/bzapi)
+shim library is compiled on your machine. Some compilation prerequisties are
+found below.
+
+In general the dependencies include `cmake`, `SWIG`, `protobuf`, and `openssl`.
+
+#### Ubuntu Prerequisites
+
+```sh
+# Build tools
+sudo apt-get install cmake pkg-config swig
+
+# Shim library dependencies
+sudo apt-get install protobuf-compiler libprotoc-dev libpcre3 libpcre3-dev
+```
+
+#### macOS Prerequisites
+
+1. Install [Homebrew](https://brew.sh/)
+2. Install build dependencies:
+
+    `brew install cmake pkg-config swig protobuf openssl`
+
+#### Windows
+
+At this time, Windows is not currently supported. Please
+[open an issue](https://github.com/bluzelle/bluzelle-py/issues) or
+[submit a pull request](https://github.com/bluzelle/bluzelle-py/pulls) if you
+require Windows support.
+
+## Examples
+
+### Synchronous (blocking) Operations
+
+```python
 import uuid
-from bluzelle import bluzelle
+import bluzelle
 
 my_uuid = str(uuid.uuid4())
 
-priv_key = "-----BEGIN EC PRIVATE KEY-----\n" \
-      "MHQCAQEEIBWDWE/MAwtXaFQp6d2Glm2Uj7ROBlDKFn5RwqQsDEbyoAcGBSuBBAAK\n" \
-      "oUQDQgAEiykQ5A02u+02FR1nftxT5VuUdqLO6lvNoL5aAIyHvn8NS0wgXxbPfpuq\n" \
-      "UPpytiopiS5D+t2cYzXJn19MQmnl/g==\n" \
-      "-----END EC PRIVATE KEY-----"
+priv_key = """-----BEGIN EC PRIVATE KEY-----
+MHQCAQEEIBWDWE/MAwtXaFQp6d2Glm2Uj7ROBlDKFn5RwqQsDEbyoAcGBSuBBAAK
+oUQDQgAEiykQ5A02u+02FR1nftxT5VuUdqLO6lvNoL5aAIyHvn8NS0wgXxbPfpuq
+UPpytiopiS5D+t2cYzXJn19MQmnl/g==
+-----END EC PRIVATE KEY-----"""
 
-blz = bluzelle.Bluzelle(priv_key, swarm_id = "", address = "127.0.0.1", port = 50000)
+blz = bluzelle.Client(priv_key)
 
-db = blz.create_db(my_uuid, 0, False)
-key = 'a'
+blz_cache = blz.create_db(my_uuid)
+key = "some_key"
 try:
-      res0 = db.read(key)
-except Exception:
+    res0 = blz_cache.read(key)
+except bluzelle.exceptions.ItemNotFound:
     print(f"{key} does not exist")
-res1 = db.create("a", "b", 0)
-print(res1) # True
-res2 = db.read("a")
-print(res2) # "b"
 
-
+blz_cache.create(key, "some_value")
+res = blz_cache.read(key)
+print(res)  # "some_value"
 ```
 
-## Example code (async) ##
-```
+### Asynchronous Operations
+
+**Note: Not currently available, on roadmap as below.**
+
+Asynchronous variants of most commands are available with the same `Client`
+object.
+
+```python
 import asyncio
 import uuid
-from bluzelle.async_support import bluzelle
+import bluzelle
 
 my_uuid = str(uuid.uuid4())
 
-priv_key = "-----BEGIN EC PRIVATE KEY-----\n" \
-      "MHQCAQEEIBWDWE/MAwtXaFQp6d2Glm2Uj7ROBlDKFn5RwqQsDEbyoAcGBSuBBAAK\n" \
-      "oUQDQgAEiykQ5A02u+02FR1nftxT5VuUdqLO6lvNoL5aAIyHvn8NS0wgXxbPfpuq\n" \
-      "UPpytiopiS5D+t2cYzXJn19MQmnl/g==\n" \
-      "-----END EC PRIVATE KEY-----"
+priv_key = """-----BEGIN EC PRIVATE KEY-----
+MHQCAQEEIBWDWE/MAwtXaFQp6d2Glm2Uj7ROBlDKFn5RwqQsDEbyoAcGBSuBBAAK
+oUQDQgAEiykQ5A02u+02FR1nftxT5VuUdqLO6lvNoL5aAIyHvn8NS0wgXxbPfpuq
+UPpytiopiS5D+t2cYzXJn19MQmnl/g==
+-----END EC PRIVATE KEY-----"""
 
-blz = bluzelle.Bluzelle(priv_key, swarm_id = "", address = "127.0.0.1", port = 50000)
+blz = bluzelle.Client(priv_key)
 
 async def interact():
-      db = await blz.create_db(my_uuid, 0, False)
-      key = 'a'
-      try:
-          res0 = await db.read(key)
-      except Exception:
-          print(f"{key} does not exist")
-      res1 = await db.create("a", "b", 0)
-      print(res1)  # True
-      res2 = await db.read("a")
-      print(res2)  # "b"
+    blz_cache = await blz.create_db_async(my_uuid)
+    key = "some_key"
+    try:
+        res0 = await blz_cache.read_async(key)
+    except bluzelle.exceptions.ItemNotFound:
+        print(f"{key} does not exist")
+
+    await blz_cache.create_async(key, "some_value")
+    res = await blz_cache.read_async(key)
+    print(res)  # "some_value"
 
 try:
     loop = asyncio.get_event_loop()
@@ -91,10 +114,4 @@ finally:
     loop.close()
 ```
 
-Please check out the integration tests for other code samples. 
-
-# Cloning and pulling changes # 
-
-Since we make use of Git submodules, to clone the repository, please run: 
-
-`git clone --recurse-submodules https://github.com/bluzelle/bluzelle-py`
+Please check out the integration tests for other code samples.
